@@ -13,7 +13,6 @@ table! {
         second_name -> Varchar,
         phone_number -> Varchar,
         email -> Varchar,
-        visit_id -> Int4,
     }
 }
 
@@ -23,11 +22,12 @@ table! {
         visit_name -> Varchar,
         visit_date -> Varchar,
         doctor_id -> Int4,
+        patient_id -> Int4,
     }
 }
 
-joinable!(patients -> visits (visit_id));
 joinable!(visits -> doctors (doctor_id));
+joinable!(visits -> patients (patient_id));
 
 allow_tables_to_appear_in_same_query!(
     doctors,
