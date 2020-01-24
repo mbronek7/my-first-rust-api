@@ -8,6 +8,11 @@ use crate::schema::patients;
 use crate::schema::doctors;
 use crate::schema::visits;
 
+include!("models/visit.rs");
+include!("models/doctor.rs");
+include!("models/patient.rs");
+
+
 #[derive(Clone)]
 pub struct Context {
   pub db: PgPool,
@@ -76,38 +81,6 @@ impl MutationRoot {
   }
 }
 
-#[derive(Queryable)]
-pub struct Patient {
-  pub id: i32,
-  pub first_name: String,
-  pub second_name: String,
-  pub phone_number: String,
-  pub email: String,
-}
-
-#[derive(juniper::GraphQLInputObject, Insertable)]
-#[table_name = "patients"]
-pub struct NewPatient {
-  pub first_name: String,
-  pub second_name: String,
-  pub phone_number: String,
-  pub email: String,
-}
-
-#[derive(Queryable)]
-pub struct Doctor {
-  pub id: i32,
-  pub name: String,
-  pub specialization: String,
-}
-
-#[derive(juniper::GraphQLInputObject, Insertable)]
-#[table_name = "doctors"]
-pub struct NewDoctor {
-  pub name: String,
-  pub specialization: String,
-}
-
 #[juniper::object(Context = Context, description = "A patients list")]
 impl Patient {
   pub fn id(&self) -> i32 {
@@ -162,24 +135,6 @@ impl Doctor {
       .load::<Visit>(&connection)
       .expect("Error loading visit data")
   }
-}
-
-#[derive(Queryable)]
-pub struct Visit {
-  pub id: i32,
-  pub visit_name: String,
-  pub visit_date: String,
-  pub doctor_id: i32,
-  pub patient_id: i32,
-}
-
-#[derive(juniper::GraphQLInputObject, Insertable)]
-#[table_name = "visits"]
-pub struct NewVisit {
-  pub visit_name: String,
-  pub visit_date: String,
-  pub doctor_id: i32,
-  pub patient_id: i32,
 }
 
 #[juniper::object(Context = Context, description = "A visits list")]
